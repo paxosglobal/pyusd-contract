@@ -1,0 +1,50 @@
+{
+  "name": "PYUSD",
+  "version": "0.0.1",
+  "description": "PayPal-issued USD-collateralized ERC20 stablecoin",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "truffle-abi": "cat build/contracts/PYUSDImplementation.json | jq -c .abi > PYUSD.abi",
+    "truffle-bin": "cat build/contracts/PYUSDImplementation.json | jq  -r .bytecode > PYUSD.bin",
+    "compile": "truffle compile",
+    "coverage": "truffle run coverage --network coverage",
+    "flatten-impl": "truffle-flattener contracts/PYUSDImplementation.sol > ./flattened/PYUSDImplementation.sol",
+    "flatten-proxy": "truffle-flattener ./contracts/zeppelin/AdminUpgradeabilityProxy.sol > ./flattened/AdminUpgradeabilityProxy.sol",
+    "ganache": "ganache-cli",
+    "migrate": "truffle migrate",
+    "solium": "solium -d contracts/ --fix",
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paxosglobal/pax-contracts.git"
+  },
+  "author": "PAXOS",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/paxosglobal/pax-contracts/issues"
+  },
+  "homepage": "https://github.com/paxosglobal/pax-contracts#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@openzeppelin/test-helpers": "^0.5.10",
+    "@openzeppelin/upgrades": "^2.8.0",
+    "@truffle/hdwallet-provider": "^1.2.1",
+    "eth-sig-util": "^3.0.0",
+    "ganache-cli": "^6.12.2",
+    "solc": "^0.4.24",
+    "solidity-coverage": "^0.7.14",
+    "solium": "^1.2.5",
+    "truffle": "5.4.29",
+    "truffle-flattener": "^1.5.0"
+  },
+  "resolutions": {
+    "axios": "^0.21.1",
+    "ajv": "^6.12.3",
+    "elliptic": "^6.0.0",
+    "diff": "^3.5.0"
+  }
+}
