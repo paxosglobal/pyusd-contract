@@ -196,7 +196,7 @@ contract PYUSDImplementation {
     function transfer(address _to, uint256 _value) public whenNotPaused returns (bool) {
         require(_to != address(0), "cannot transfer to address zero");
         require(!frozen[_to] && !frozen[msg.sender], "address frozen");
-        require(_value <= balances[msg.sender], "insufficient funds");
+        require(_value <= balances[msg.sender], "insufficient balance");
 
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
@@ -232,7 +232,7 @@ contract PYUSDImplementation {
     {
         require(_to != address(0), "cannot transfer to address zero");
         require(!frozen[_to] && !frozen[_from] && !frozen[msg.sender], "address frozen");
-        require(_value <= balances[_from], "insufficient funds");
+        require(_value <= balances[_from], "insufficient balance");
         require(_value <= allowed[_from][msg.sender], "insufficient allowance");
 
         balances[_from] = balances[_from].sub(_value);
@@ -316,7 +316,7 @@ contract PYUSDImplementation {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == owner, "onlyOwner");
+        require(msg.sender == owner, "this is an only owner function");
         _;
     }
 
@@ -325,8 +325,8 @@ contract PYUSDImplementation {
          * @param _proposedOwner The address to transfer ownership to.
          */
     function proposeOwner(address _proposedOwner) public onlyOwner {
-        require(_proposedOwner != address(0), "cannot transfer ownership to address zero");
-        require(msg.sender != _proposedOwner, "caller already is owner");
+        require(_proposedOwner != address(0), "can not transfer ownership to address zero");
+        require(msg.sender != _proposedOwner, "address already owner");
         proposedOwner = _proposedOwner;
         emit OwnershipTransferProposed(owner, proposedOwner);
     }
@@ -334,7 +334,7 @@ contract PYUSDImplementation {
      * @dev Allows the current owner or proposed owner to cancel transferring control of the contract to a proposedOwner
      */
     function disregardProposeOwner() public {
-        require(msg.sender == proposedOwner || msg.sender == owner, "only proposedOwner or owner");
+        require(msg.sender == proposedOwner || msg.sender == owner, "this function can only be used for owner or proposedOwner.");
         require(proposedOwner != address(0), "can only disregard a proposed owner that was previously set");
         address _oldProposedOwner = proposedOwner;
         proposedOwner = address(0);
@@ -344,7 +344,7 @@ contract PYUSDImplementation {
      * @dev Allows the proposed owner to complete transferring control of the contract to the proposedOwner.
      */
     function claimOwnership() public {
-        require(msg.sender == proposedOwner, "onlyProposedOwner");
+        require(msg.sender == proposedOwner, "this is an only proposedOwner function");
         address _oldOwner = owner;
         owner = proposedOwner;
         proposedOwner = address(0);
@@ -369,7 +369,7 @@ contract PYUSDImplementation {
      * @dev Modifier to make a function callable only when the contract is not paused.
      */
     modifier whenNotPaused() {
-        require(!paused, "whenNotPaused");
+        require(!paused, "contract paused");
         _;
     }
 
@@ -377,7 +377,7 @@ contract PYUSDImplementation {
      * @dev called by the owner to pause, triggers stopped state
      */
     function pause() public onlyOwner {
-        require(!paused, "already paused");
+        require(!paused, "contract already paused");
         paused = true;
         emit Pause();
     }
@@ -386,7 +386,7 @@ contract PYUSDImplementation {
      * @dev called by the owner to unpause, returns to normal state
      */
     function unpause() public onlyOwner {
-        require(paused, "already unpaused");
+        require(paused, "contract already unpaused");
         paused = false;
         emit Unpause();
     }
@@ -398,14 +398,14 @@ contract PYUSDImplementation {
      * @param _newAssetProtectionRole The new address allowed to freeze/unfreeze addresses and seize their tokens.
      */
     function setAssetProtectionRole(address _newAssetProtectionRole) public {
-        require(msg.sender == assetProtectionRole || msg.sender == owner, "only assetProtectionRole or Owner");
-        require(assetProtectionRole != _newAssetProtectionRole, "new address is same as a current one");
+        require(msg.sender == assetProtectionRole || msg.sender == owner, "this is an only assetProtectionRole or owner function");
+        require(assetProtectionRole != _newAssetProtectionRole, "the new address can not be the same as the current one");
         emit AssetProtectionRoleSet(assetProtectionRole, _newAssetProtectionRole);
         assetProtectionRole = _newAssetProtectionRole;
     }
 
     modifier onlyAssetProtectionRole() {
-        require(msg.sender == assetProtectionRole, "onlyAssetProtectionRole");
+        require(msg.sender == assetProtectionRole, "this is an onlyAssetProtectionRole function");
         _;
     }
 
@@ -459,15 +459,15 @@ contract PYUSDImplementation {
      * @param _newSupplyController The address allowed to burn/mint tokens to control supply.
      */
     function setSupplyController(address _newSupplyController) public {
-        require(msg.sender == supplyController || msg.sender == owner, "only SupplyController or Owner");
-        require(_newSupplyController != address(0), "cannot set supply controller to address zero");
-        require(supplyController != _newSupplyController, "new address is same as a current one");
+        require(msg.sender == supplyController || msg.sender == owner, "this is an only SupplyController or owner");
+        require(_newSupplyController != address(0), "supply controller address cannot be zero");
+        require(supplyController != _newSupplyController, "the new address can not be the same as the current one");
         emit SupplyControllerSet(supplyController, _newSupplyController);
         supplyController = _newSupplyController;
     }
 
     modifier onlySupplyController() {
-        require(msg.sender == supplyController, "onlySupplyController");
+        require(msg.sender == supplyController, "this is an onlySupplyController function");
         _;
     }
 
@@ -490,7 +490,7 @@ contract PYUSDImplementation {
      * @return A boolean that indicates if the operation was successful.
      */
     function decreaseSupply(uint256 _value) public onlySupplyController returns (bool success) {
-        require(_value <= balances[supplyController], "not enough supply");
+        require(_value <= balances[supplyController], "supply is not enough");
         balances[supplyController] = balances[supplyController].sub(_value);
         totalSupply_ = totalSupply_.sub(_value);
         emit SupplyDecreased(supplyController, _value);
@@ -526,7 +526,7 @@ contract PYUSDImplementation {
     function betaDelegatedTransfer(
         bytes sig, address to, uint256 value, uint256 fee, uint256 seq, uint256 deadline
     ) public returns (bool) {
-        require(sig.length == 65, "signature should have length 65");
+        require(sig.length == 65, "signature length must be 65");
         bytes32 r;
         bytes32 s;
         uint8 v;
@@ -558,8 +558,8 @@ contract PYUSDImplementation {
     function _betaDelegatedTransfer(
         bytes32 r, bytes32 s, uint8 v, address to, uint256 value, uint256 fee, uint256 seq, uint256 deadline
     ) internal whenNotPaused returns (bool) {
-        require(betaDelegateWhitelist[msg.sender], "Beta feature only accepts whitelisted delegates");
-        require(value > 0 || fee > 0, "cannot transfer zero tokens with zero fee");
+        require(betaDelegateWhitelist[msg.sender], "beta feature only accepts whitelisted delegates");
+        require(value > 0 || fee > 0, "can not transfer zero tokens with zero fee");
         require(block.number <= deadline, "transaction expired");
         // prevent sig malleability from ecrecover()
         require(uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0, "signature incorrect");
@@ -573,7 +573,7 @@ contract PYUSDImplementation {
         address _from = ecrecover(hash, v, r, s);
 
         require(_from != address(0), "error determining from address from signature");
-        require(to != address(0), "canno use address zero");
+        require(to != address(0), "can not use address zero");
         require(!frozen[to] && !frozen[_from] && !frozen[msg.sender], "address frozen");
         require(value.add(fee) <= balances[_from], "insufficient fund");
         require(nextSeqs[_from] == seq, "incorrect seq");
@@ -631,14 +631,14 @@ contract PYUSDImplementation {
      * @param _newWhitelister The address allowed to whitelist betaDelegates.
      */
     function setBetaDelegateWhitelister(address _newWhitelister) public {
-        require(msg.sender == betaDelegateWhitelister || msg.sender == owner, "only Whitelister or Owner");
-        require(betaDelegateWhitelister != _newWhitelister, "new address is same as a current one");
+        require(msg.sender == betaDelegateWhitelister || msg.sender == owner, "this is an only Whitelister or Owner function");
+        require(betaDelegateWhitelister != _newWhitelister, "the new address cannot be the same as the current one");
         betaDelegateWhitelister = _newWhitelister;
         emit BetaDelegateWhitelisterSet(betaDelegateWhitelister, _newWhitelister);
     }
 
     modifier onlyBetaDelegateWhitelister() {
-        require(msg.sender == betaDelegateWhitelister, "onlyBetaDelegateWhitelister");
+        require(msg.sender == betaDelegateWhitelister, "this is an onlyBetaDelegateWhitelister function");
         _;
     }
 
