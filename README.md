@@ -9,7 +9,7 @@ https://github.com/paxosglobal/pyusd-contract
 The contract abi is in `PYUSD.abi`. It is the abi of the implementation contract.
 Interaction with PayPal USD is done at the address of the proxy at `0x6c3ea9036406852006290770bedfcaba0e23a0e8`. See
 https://etherscan.io/token/0x6c3ea9036406852006290770bedfcaba0e23a0e8 for live on-chain details, and the section on bytecode verification below.
-Additionally, an independent security audit was conducted by Trail of Bits and the audit report can be found [here](audit-reports/Trail_of_Bits_Audit_Report.pdf), referenced under the original code name Token Hopper/XYZ.
+Additionally, an independent security audit was conducted by Trail of Bits and the audit report can be found [here](audit-reports/Trail_of_Bits_Audit_Report.pdf).
 
 ## Contract Specification
 
