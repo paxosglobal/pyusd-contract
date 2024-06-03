@@ -141,6 +141,18 @@ The proxy contract and implementation contracts are verified on etherscan at the
 https://etherscan.io/token/0x6c3ea9036406852006290770bedfcaba0e23a0e8
 https://etherscan.io/token/0xe17b8aDF8E46b15f3F9aB4Bb9E3b6e31Db09126E
 
+## Paxos Support
+
+Visit Paxos [PYUSD](https://paxos.com/PYUSD/) website for more information.
+
+### Testnet Faucet
+
+Paxos [Faucet](https://faucet.paxos.com/) to get PYUSD on testnet.
+
+### Solana
+
+PYUSD is also available in Solana network. You can interact with the PYUSD token at the [address](https://explorer.solana.com/address/2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo): `2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo`.
+
 ## Contract Tests
 
 `make setup`
