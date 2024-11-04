@@ -9,7 +9,11 @@ https://github.com/paxosglobal/pyusd-contract
 The contract abi is in `PYUSD.abi`. It is the abi of the implementation contract.
 Interaction with PayPal USD is done at the address of the proxy at `0x6c3ea9036406852006290770bedfcaba0e23a0e8`. See
 https://etherscan.io/token/0x6c3ea9036406852006290770bedfcaba0e23a0e8 for live on-chain details, and the section on bytecode verification below.
-Additionally, an independent security audit was conducted by Trail of Bits and the audit report can be found [here](audit-reports/Trail_of_Bits_Audit_Report.pdf).
+
+## Audits
+The initial independent security audit was conducted by Trail of Bits and the audit report can be found [here](audit-reports/Trail_of_Bits_Audit_Report.pdf).
+
+An additional audit was performed by Zellic and can be found [here](https://github.com/paxosglobal/paxos-token-contracts/blob/master/audits/Paxos%20Stablecoin%20-%20Zellic%20Audit%20Report.pdf)
 
 ## Contract Specification
 
@@ -56,21 +60,12 @@ To mitigate this risk, we recommend that smart contract users utilize the altern
 
 ### Controlling the token supply
 
-The total supply of PYUSD is backed by US dollar fiat held in reserve by Paxos Trust Company.
-There is a single `supplyController` address that can mint and burn the token
-based on the actual movement of cash in and out of the reserve based on
-requests for the purchase and redemption of PYUSD.
+PYUSD uses a separately deployed `SupplyControl` contract to control the token supply. `SupplyControl` has a `SUPPLY_CONTROLLER_MANAGER_ROLE` which is responsible for managing addresses with the `SUPPLY_CONTROLLER_ROLE`, referred
+to as supplyControllers. Only supplyControllers can mint and burn tokens. SupplyControllers can optionally have rate 
+limits to limit how many tokens can be minted over a given time frame.
 
-The supply control interface includes methods to get the current address
-of the supply controller, and events to monitor the change in supply of PYUSD.
-
-- `supplyController()`
-
-Supply Control Events
-
-- `SupplyIncreased(address indexed to, uint256 value)`
-- `SupplyDecreased(address indexed from, uint256 value)`
-- `SupplyControllerSet(address indexed oldSupplyController, address indexed newSupplyController)`
+`SupplyControl` also includes functions to get all of the supply controller addresses
+and get configuration for a specific supply controller.
 
 ### Pausing the contract
 
@@ -85,32 +80,73 @@ While paused, the supply controller retains the ability to mint and burn tokens.
 
 ### Asset Protection Role
 
-Paxos Trust Company is regulated by the New York Department of Financial Services (NYDFS). As required by the regulator,
-Paxos must have a role for asset protection to freeze or seize the assets of a criminal party when required to do so by
-law, including by court order or other legal process.
-
-The `assetProtectionRole` can freeze and unfreeze the PYUSD balance of any address on chain.
+The `ASSET_PROTECTION_ROLE` can freeze and unfreeze the token balance of any address on chain.
 It can also wipe the balance of an address after it is frozen
 to allow the appropriate authorities to seize the backing assets.
 
 Freezing is something that Paxos will not do on its own accord,
-and as such we expect to happen extremely rarely. The list of frozen addresses is available
-in `isFrozen(address who)`.
+and as such we expect to happen extremely rarely. Checking if an address is frozen is possible
+via `isFrozen(address who)`.
 
-### BetaDelegateTransfer
+### Delegate Transfer 
 
-In order to allow for gas-less transactions we have implemented a variation of [EIP-865](https://github.com/ethereum/EIPs/issues/865).
-The public function betaDelegatedTransfer and betaDelegatedTransferBatch allow an approved party to transfer PYUSD
-on the end user's behalf given a signed message from said user. Because EIP-865 is not finalized,
-all methods related to delegated transfers are prefixed by Beta. Only approved parties are allowed to transfer
-PYUSD on a user's behalf because of potential attacks associated with signing messages.
-To mitigate some attacks, [EIP-712](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md)
-is implemented which provides a structured message to be displayed for verification when signing.
+To facilitate gas-less transactions, we have implemented [EIP-3009](https://eips.ethereum.org/EIPS/eip-3009) and [EIP-2612](https://eips.ethereum.org/EIPS/eip-2612).
+
+#### EIP-3009
+The public functions, `transferWithAuthorization` and `transferWithAuthorizationBatch` (for multiple transfers request), allows a spender(delegate) to transfer tokens on behalf of the sender, with condition that a signature, conforming to [EIP-712](https://eips.ethereum.org/EIPS/eip-712), is provided by the respective sender.
+
  ```
- function betaDelegatedTransfer(
-    bytes sig, address to, uint256 value, uint256 fee, uint256 seq, uint256 deadline
- ) public returns (bool) {
+function transferWithAuthorization(
+    address from,
+    address to,
+    uint256 value,
+    uint256 validAfter,
+    uint256 validBefore,
+    bytes32 nonce,
+    uint8 v,
+    bytes32 r,
+    bytes32 s
+) external;
+
+function transferWithAuthorizationBatch(
+    address[] memory from,
+    address[] memory to,
+    uint256[] memory value,
+    uint256[] memory validAfter,
+    uint256[] memory validBefore,
+    bytes32[] memory nonce,
+    uint8[] memory v,
+    bytes32[] memory r,
+    bytes32[] memory s
+) external;
  ```
+
+#### EIP-2612
+The sender can establish an allowance for the spender using the permit function, which employs an EIP-712 signature for authorization. Subsequently, the spender can employ the `transferFrom` and `transferFromBatch` functions to initiate transfers on behalf of the sender.
+
+```
+function permit(
+    address owner,
+    address spender,
+    uint value,
+    uint deadline,
+    uint8 v,
+    bytes32 r,
+    bytes32 s
+) external;
+
+function transferFrom(
+    address _from,
+    address _to,
+    uint256 _value
+) public returns (bool);
+
+function transferFromBatch(
+    address[] calldata _from,
+    address[] calldata _to,
+    uint256[] calldata _value
+) public returns (bool);
+```
 
 ### Upgradeability Proxy
 
@@ -154,17 +190,18 @@ Paxos [Faucet](https://faucet.paxos.com/) to get PYUSD on testnet.
 PYUSD is also available in Solana network. You can interact with the PYUSD token at the [address](https://explorer.solana.com/address/2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo): `2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo`.
 
 ## Contract Tests
+Install dependencies:
 
-`make setup`
+`npm install`
 
-To run smart contract tests first start ganache-cli
+Compile the contracts:
 
-`make ganache`
+`npm run compile`
 
-in another terminal
+Run unit tests:
 
-Then run
+`npm run test`
 
-`make test-contracts`
+Check test coverage:
 
-You can also run `make test-contracts-coverage` to see a coverage report.
+`npm run coverage`
