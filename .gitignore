@@ -7,8 +7,12 @@ coverage.json
 coverageEnv/
 scTopics
 allFiredEvents
+artifacts/
+cache/
+typechain-types/
 
 .DS_Store
+.env
 
 # Binaries for programs and plugins
 *.exe
