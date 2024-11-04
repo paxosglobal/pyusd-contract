@@ -174,8 +174,12 @@ to the proxy contract.
 ## Bytecode verification
 
 The proxy contract and implementation contracts are verified on etherscan at the following links:
-https://etherscan.io/token/0x6c3ea9036406852006290770bedfcaba0e23a0e8
-https://etherscan.io/token/0xe17b8aDF8E46b15f3F9aB4Bb9E3b6e31Db09126E
+- Proxy: https://etherscan.io/token/0x6c3ea9036406852006290770bedfcaba0e23a0e8
+- Implementation: https://etherscan.io/token/0x8EcaE0B0402E29694B3Af35d5943D4631Ee568dC
+
+The SupplyControl contract and implementation contracts are verified on etherscan at the following links:
+- Proxy: https://etherscan.io/address/0x31d9bDEa6F104606C954f8FE6ba614F1BD347Ec3
+- Implementation: https://etherscan.io/address/0xFaB5891ED867a1195303251912013b92c4fc3a1D
 
 ## Paxos Support
 
