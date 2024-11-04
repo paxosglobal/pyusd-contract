@@ -8,12 +8,9 @@
   "scripts": {
     "generate-abi": "cat artifacts/contracts/PYUSD.sol/PYUSD.json | jq -c .abi > PYUSD.abi",
     "generate-bin": "cat artifacts/contracts/PYUSD.sol/PYUSD.json | jq -r .bytecode > PYUSD.bin",
-    "compile": "npx hardhat compile --force",
-    "coverage": "npx hardhat coverage",
+    "compile": "npx hardhat compile",
     "flatten-impl": "npx hardhat flatten contracts/PYUSD.sol",
-    "solhint": "solhint 'contracts/**/*.sol'",
-    "prettier": "prettier --write --plugin=prettier-plugin-solidity 'contracts/*.sol' 'contracts/lib/*.sol'",
-    "test": "npx hardhat test",
+    "prettier": "prettier --write --plugin=prettier-plugin-solidity 'contracts/*.sol'",
     "size": "npx hardhat size-contracts"
   },
   "repository": {
