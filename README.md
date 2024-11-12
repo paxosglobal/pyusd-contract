@@ -13,7 +13,7 @@ https://etherscan.io/token/0x6c3ea9036406852006290770bedfcaba0e23a0e8 for live o
 ## Audits
 The initial independent security audit was conducted by Trail of Bits and the audit report can be found [here](audit-reports/Trail_of_Bits_Audit_Report.pdf).
 
-An additional audit was performed by Zellic and can be found [here](https://github.com/paxosglobal/paxos-token-contracts/blob/master/audits/Paxos%20Stablecoin%20-%20Zellic%20Audit%20Report.pdf)
+Additional audits were performed by Zellic and Trail of Bits.  Audits can be found [here](https://github.com/paxosglobal/paxos-token-contracts/blob/master/audits/).
 
 ## Contract Specification
 
