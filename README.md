@@ -11,9 +11,12 @@ Interaction with PayPal USD is done at the address of the proxy at `0x6c3ea90364
 https://etherscan.io/token/0x6c3ea9036406852006290770bedfcaba0e23a0e8 for live on-chain details, and the section on bytecode verification below.
 
 ## Audits
+### PYUSD v1 Audit
 The initial independent security audit was conducted by Trail of Bits and the audit report can be found [here](audit-reports/Trail_of_Bits_Audit_Report.pdf).
 
-An additional audit was performed by Zellic and can be found [here](https://github.com/paxosglobal/paxos-token-contracts/blob/master/audits/Paxos%20Stablecoin%20-%20Zellic%20Audit%20Report.pdf)
+### PYUSD v2 Audits
+Audits were also performed by Zellic and Trail of Bits on the new PYUSD v2 implementation. The PaxosTokenV2 audit reports can be 
+found [here](https://github.com/paxosglobal/paxos-token-contracts/blob/master/audits/).
 
 ## Contract Specification
 
