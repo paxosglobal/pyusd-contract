@@ -174,27 +174,16 @@ it can all be done in one transaction. You must first deploy a copy of the new i
 contract, which is automatically paused by its constructor to help avoid accidental calls directly
 to the proxy contract.
 
-## Bytecode verification
-
-The proxy contract and implementation contracts are verified on etherscan at the following links:
-- Proxy: https://etherscan.io/token/0x6c3ea9036406852006290770bedfcaba0e23a0e8
-- Implementation: https://etherscan.io/token/0x8EcaE0B0402E29694B3Af35d5943D4631Ee568dC
-
-The SupplyControl contract and implementation contracts are verified on etherscan at the following links:
-- Proxy: https://etherscan.io/address/0x31d9bDEa6F104606C954f8FE6ba614F1BD347Ec3
-- Implementation: https://etherscan.io/address/0xFaB5891ED867a1195303251912013b92c4fc3a1D
+## Contract Addresses
+Contract addresses can be found at [docs.paxos.com](https://docs.paxos.com/guides/stablecoin/pyusd/mainnet)
 
 ## Paxos Support
 
 Visit Paxos [PYUSD](https://paxos.com/PYUSD/) website for more information.
 
-### Testnet Faucet
+## Testnet Faucet
 
 Paxos [Faucet](https://faucet.paxos.com/) to get PYUSD on testnet.
-
-### Solana
-
-PYUSD is also available in Solana network. You can interact with the PYUSD token at the [address](https://explorer.solana.com/address/2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo): `2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo`.
 
 ## Contract Tests
 Install dependencies:
